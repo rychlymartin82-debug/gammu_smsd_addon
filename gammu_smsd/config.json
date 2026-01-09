@@ -1,7 +1,7 @@
 {
-  "name": "gammu_smsd_addon",
+  "name": "gammu_smsd",
   "version": "1.0.0",
-  "slug": "gammu_smsd_addon",
+  "slug": "gammu_smsd",
   "description": "SMS gateway using Gammu SMSD",
   "startup": "services",
   "boot": "auto",
@@ -15,3 +15,4 @@
   },
   "devices": ["/dev/ttyUSB2:/dev/ttyUSB2:rwm"]
 }
+
