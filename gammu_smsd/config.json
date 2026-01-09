@@ -9,7 +9,7 @@
   "init": false,
   "map": ["config:ro", "share:rw", "addons:rw", "ssl"],
   "options": {
-    "device": "/dev/ttyUSB2",
+    "device": "/dev/serial/by-id/usb-HUAWEI_HUAWEI_Mobile-if00-port0",
     "pin": "",
     "smsc": "",
     "log_level": "info",
@@ -37,11 +37,6 @@
     "mqtt_outgoing_topic": "str"
   },
   "ports": {},
-  "devices": [
-    "/dev/ttyUSB0",
-    "/dev/ttyUSB1",
-    "/dev/ttyUSB2",
-    "/dev/serial/by-id"
-  ],
+  "devices": ["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2", "/dev/serial/by-id"],
   "privileged": ["SYS_ADMIN", "SYS_TIME"]
 }
