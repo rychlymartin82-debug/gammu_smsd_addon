@@ -1,25 +1,19 @@
 {
   "name": "Gammu SMSD",
-  "version": "1.2",
+  "version": "1.0.0",
   "slug": "gammu_smsd",
-  "description": "Send and receive SMS via Huawei modem using Gammu SMSD (MQTT bridge for outgoing).",
-  "arch": ["aarch64", "amd64", "armv7", "armhf", "i386"],
+  "description": "SMS gateway using Gammu with MQTT bridge",
   "startup": "services",
   "boot": "auto",
-  "host_network": false,
-  "udev": true,
-  "devices": [
-    "/dev/serial/by-id/usb-HUAWEI_HUAWEI_Mobile-if00-port0"
-  ],
+  "ports": {},
   "options": {
-    "device": "/dev/serial/by-id/usb-HUAWEI_HUAWEI_Mobile-if00-port0",
+    "device": "",
     "pin": "",
     "smsc": "",
     "log_level": "info",
     "check_interval": 10,
     "receive": true,
     "delete_after_recv": false,
-
     "mqtt_host": "core-mosquitto",
     "mqtt_port": 1883,
     "mqtt_user": "",
@@ -30,16 +24,14 @@
     "device": "str",
     "pin": "str?",
     "smsc": "str?",
-    "log_level": "list(info|debug|error)",
-    "check_interval": "int(5,300)",
+    "log_level": "str",
+    "check_interval": "int",
     "receive": "bool",
     "delete_after_recv": "bool",
-
-    "mqtt_host": "str?",
-    "mqtt_port": "int?",
-    "mqtt_user": "str?",
-    "mqtt_pass": "str?",
-    "mqtt_outgoing_topic": "str?"
-  },
-  "dockerfile": true
+    "mqtt_host": "str",
+    "mqtt_port": "int",
+    "mqtt_user": "str",
+    "mqtt_pass": "str",
+    "mqtt_outgoing_topic": "str"
+  }
 }
