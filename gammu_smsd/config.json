@@ -1,7 +1,7 @@
 {
-  "name": "gammu_smsd",
+  "name": "gammu_smsd_addon",
   "version": "1.0.0",
-  "slug": "gammu_smsd",
+  "slug": "gammu_smsd_addon",
   "description": "SMS gateway using Gammu SMSD",
   "startup": "services",
   "boot": "auto",
