@@ -42,8 +42,5 @@ ErrorSMSPath = /data/error/
 RunOnReceive = /usr/local/bin/mqtt_bridge.sh
 EOF
 
-echo "Waiting for modem to settle..."
-sleep 10
-
 echo "Starting gammu-smsd..."
 exec gammu-smsd -c /etc/gammu-smsdrc -d
