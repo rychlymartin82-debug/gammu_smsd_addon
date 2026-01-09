@@ -1,14 +1,13 @@
-cat > config.json << 'EOF'
 {
-  "name": "SMS Gateway",
-  "version": "1.0.3",
-  "slug": "sms_gateway",
-  "description": "SMS Gateway using Gammu SMSD with MQTT",
+  "name": "Gammu SMS Gateway",
+  "version": "2.0.1",
+  "slug": "gammu_sms_gateway",
+  "description": "SMS Gateway using Gammu SMSD with MQTT support",
+  "url": "https://github.com/rychlymartin82-debug/gammu_smsd_addon",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "startup": "application",
   "boot": "auto",
-  "ports": {},
-  "ports_description": {},
+  "init": false,
   "devices": ["/dev/ttyUSB2:/dev/ttyUSB2:rwm"],
   "auto_uart": false,
   "homeassistant_api": false,
@@ -16,13 +15,13 @@ cat > config.json << 'EOF'
   "hassio_role": "default",
   "auth_api": false,
   "ingress": false,
-  "panel_icon": "mdi:message-text",
+  "panel_icon": "mdi:message-text-outline",
   "options": {
     "device": "/dev/ttyUSB2",
     "mqtt_host": "core-mosquitto",
     "mqtt_port": 1883,
     "mqtt_user": "smsd",
-    "mqtt_password": "EmA605285285",
+    "mqtt_password": "",
     "mqtt_topic": "Ourplace/SMS/Outgoing"
   },
   "schema": {
@@ -34,4 +33,3 @@ cat > config.json << 'EOF'
     "mqtt_topic": "str"
   }
 }
-EOF
