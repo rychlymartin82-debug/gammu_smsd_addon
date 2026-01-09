@@ -18,3 +18,4 @@ RUN chmod +x /usr/local/bin/run.sh && \
 
 # Spouštěcí skript
 CMD ["/usr/local/bin/run.sh"]
+
