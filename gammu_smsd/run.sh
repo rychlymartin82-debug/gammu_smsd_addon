@@ -1,24 +1,29 @@
-#!/usr/bin/with-contenv bashio
+cat > run.sh << 'EOF'
+#!/bin/bash
+set -e
 
 CONFIG_PATH=/data/options.json
 SMSD_CONFIG=/data/smsd.conf
 SMSD_LOG=/data/smsd.log
 
-# Read options
-DEVICE=$(bashio::config 'device')
-MQTT_HOST=$(bashio::config 'mqtt_host')
-MQTT_PORT=$(bashio::config 'mqtt_port')
-MQTT_USER=$(bashio::config 'mqtt_user')
-MQTT_PASS=$(bashio::config 'mqtt_password')
-MQTT_TOPIC=$(bashio::config 'mqtt_topic')
+# Read config
+DEVICE=$(grep -Po '"device":\s*"\K[^"]+' $CONFIG_PATH)
+MQTT_HOST=$(grep -Po '"mqtt_host":\s*"\K[^"]+' $CONFIG_PATH)
+MQTT_PORT=$(grep -Po '"mqtt_port":\s*\K[0-9]+' $CONFIG_PATH)
+MQTT_USER=$(grep -Po '"mqtt_user":\s*"\K[^"]+' $CONFIG_PATH)
+MQTT_PASS=$(grep -Po '"mqtt_password":\s*"\K[^"]+' $CONFIG_PATH)
+MQTT_TOPIC=$(grep -Po '"mqtt_topic":\s*"\K[^"]+' $CONFIG_PATH)
 
-bashio::log.info "Log filename is \"$SMSD_LOG\""
-bashio::log.info ""
-bashio::log.info "Using device: $DEVICE"
-bashio::log.info "MQTT: host=$MQTT_HOST port=$MQTT_PORT user=$MQTT_USER topic=$MQTT_TOPIC"
+echo "=========================================="
+echo "SMS GATEWAY DEBUG LOG"
+echo "=========================================="
+echo "Device: $DEVICE"
+echo "MQTT: $MQTT_HOST:$MQTT_PORT (user: $MQTT_USER)"
+echo "Topic: $MQTT_TOPIC"
+echo "=========================================="
 
-# Create SMSD config
-cat > $SMSD_CONFIG << EOF
+# Create config
+cat > $SMSD_CONFIG << ENDCONF
 [gammu]
 device = $DEVICE
 connection = at
@@ -34,7 +39,6 @@ errorsmspath = /data/error/
 
 RunOnReceive = /app/on_receive.sh
 
-# MQTT Publishing
 PhoneID = SMSGateway
 User = $MQTT_USER
 Password = $MQTT_PASS
@@ -43,29 +47,24 @@ ClientID = smsd_gateway
 
 [include_numbers]
 number1 = *
-EOF
+ENDCONF
 
-# Create directories
 mkdir -p /data/{inbox,outbox,sent,error}
 
-bashio::log.info "Waiting for modem to settle..."
+echo "Waiting for modem (10s)..."
 sleep 10
 
-# Test modem connection FIRST
-bashio::log.info "Testing modem connection..."
-gammu --config $SMSD_CONFIG identify 2>&1 | tee /tmp/gammu_test.log
-
-if [ $? -ne 0 ]; then
-    bashio::log.error "❌ MODEM CONNECTION FAILED!"
-    bashio::log.error "Error details:"
-    cat /tmp/gammu_test.log
+echo "Testing modem connection..."
+if ! gammu --config $SMSD_CONFIG identify 2>&1; then
+    echo "ERROR: Modem test failed!"
+    echo "Showing device info:"
+    ls -la /dev/ttyUSB* || echo "No ttyUSB devices found!"
     exit 1
 fi
 
-bashio::log.info "✅ Modem connected successfully"
+echo "✓ Modem OK"
+echo "Starting SMSD daemon..."
+exec gammu-smsd --config $SMSD_CONFIG --pid /var/run/smsd.pid
+EOF
 
-# Start SMSD with error output
-bashio::log.info "Starting gammu-smsd..."
-gammu-smsd --config $SMSD_CONFIG --pid /var/run/smsd.pid 2>&1 | while IFS= read -r line; do
-    bashio::log.info "SMSD: $line"
-done
+chmod +x run.sh
